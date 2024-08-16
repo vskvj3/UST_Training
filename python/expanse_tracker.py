@@ -213,11 +213,11 @@ def cli():
             calc.generate_summary_report()
 
         elif choice == '6':
-            print("\nThank you for using our service!")
+            print("\nExiting....")
             break
 
         else:
-            print("\nInvalid choice. Please select a valid option.")
+            print("\nInvalid choice. Try Again")
 
 
 def main():
@@ -235,7 +235,7 @@ def main():
         cli()
 
     else:
-        print("\nWrong credentials. Please try again.")
+        print("\nInvalid Credentials, Try again.")
 
 
 if __name__ == "__main__":
