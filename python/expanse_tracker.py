@@ -27,14 +27,10 @@ class Expense:
         Returns:
             str: String representation of the expense item.
         """
-        return (f'Expense ID: {self.expense_id}\n'
-                f'Date: {self.date}\n'
-                f'Category: {self.category}\n'
-                f'Description: {self.description}\n'
-                f'Amount: ${self.amount:.2f}')
+        return f'Expense ID: {self.expense_id}\n Date: {self.date}\nCategory: {self.category}\nDescription: {self.description}\nAmount: ${self.amount:.2f}'
 
 
-class Calc:
+class ExpanseCalculator:
     """Class to represent an expense calculator with the following methods.
     """
 
@@ -153,17 +149,12 @@ class Authentication:
 def cli():
     """Command Line Interface for the Expense Tracker application
     """
-    calc = Calc()
+    expense_calc = ExpanseCalculator()
 
     while True:
-        choice = input("\nSelect an option:\n"
-                       "1. Add item\n"
-                       "2. Update item\n"
-                       "3. Delete item\n"
-                       "4. Display expenses\n"
-                       "5. Generate summary report\n"
-                       "6. Exit\n"
-                       "Enter your choice: ")
+        choice = input(
+            '\nSelect an option: \n1. Add item \n2. Update item \n3. Delete item \n4. Display expenses \n5. Generate summary report \n6. Exit \nEnter your choice: ')
+
         if choice == '1':
             print("\nEnter the details of the expense:")
             try:
@@ -176,17 +167,15 @@ def cli():
 
                 expense = Expense(expense_id, date, category,
                                   description, amount)
-                calc.add_expenses(expense)
-            except ValueError as e:
-                print(f"Invalid input: {e}. Please enter valid data.")
+                expense_calc.add_expenses(expense)
+            except ValueError as error:
+                print(f"Invalid input: {error}")
 
         elif choice == '2':
             print("\nEnter the details of the updated expense:")
             try:
-                expense_id = int(
-                    input("Enter unique ID of the expense to be updated: "))
-                new_expense_id = int(
-                    input("Enter the new unique ID for the expense: "))
+                expense_id = int(input("Enter unique ID: "))
+
                 date = input("Enter the date (YYYY-MM-DD): ")
                 datetime.strptime(date, '%Y-%m-%d')
                 category = input("Enter the category: ")
@@ -194,23 +183,24 @@ def cli():
                 amount = float(input("Enter the amount: "))
 
                 new_expense = Expense(
-                    new_expense_id, date, category, description, amount)
-                calc.update_expense(expense_id, new_expense)
-            except ValueError as e:
-                print(f"Invalid input: {e}. Please enter valid data.")
+                    expense_id, date, category, description, amount)
+
+                expense_calc.update_expense(expense_id, new_expense)
+            except ValueError as error:
+                print(f"Invalid input: {error}.")
 
         elif choice == '3':
             try:
                 expense_id = int(input("Enter the expense ID to delete: "))
-                calc.delete_expense(expense_id)
-            except ValueError:
-                print("Invalid input. Please enter a valid integer ID.")
+                expense_calc.delete_expense(expense_id)
+            except ValueError as error:
+                print(f"Invalid input: {error}")
 
         elif choice == '4':
-            calc.display_expense()
+            expense_calc.display_expense()
 
         elif choice == '5':
-            calc.generate_summary_report()
+            expense_calc.generate_summary_report()
 
         elif choice == '6':
             print("\nExiting....")
