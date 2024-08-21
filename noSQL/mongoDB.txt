@@ -1,0 +1,9 @@
+# Create database:
+use database_name;
+
+# create a collection:
+db.createCollection("collection_name");
+
+# insert into collections
+db.collection_name.insertOne()
+
