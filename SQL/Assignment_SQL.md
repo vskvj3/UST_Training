@@ -1,72 +1,5 @@
 ## Employee Database Analysis
 
-### Create the database
-```
-![screenshot](screenshots/placeholder.png)
-CREATE DATABASE HREmployeeDB;
-USE HREmployeeDB;
-```
-![screenshot](screenshots/placeholder.png)
-
-### Create the EmployeeData table
-```sql
-CREATE TABLE EmployeeData (
-    Attrition NVARCHAR(50),
-    BusinessTravel NVARCHAR(50),
-    CF_age_band NVARCHAR(50),
-    CF_attrition_label NVARCHAR(50),
-    Department NVARCHAR(50),
-    EducationField NVARCHAR(50),
-    emp_no NVARCHAR(50),
-    EmployeeNumber INT,
-    Gender NVARCHAR(50),
-    JobRole NVARCHAR(50),
-    MaritalStatus NVARCHAR(50),
-    OverTime NVARCHAR(50),
-    Over18 NVARCHAR(50),
-    TrainingTimesLastYear INT,
-    Age INT,
-    CF_current NVARCHAR(50),
-    DailyRate INT,
-    DistanceFromHome INT,
-    Education NVARCHAR(50),
-    EmployeeCount INT,
-    EnvironmentSatisfaction INT,
-    HourlyRate INT,
-    JobInvolvement INT,
-    JobLevel INT,
-    JobSatisfaction INT,
-    MonthlyIncome INT,
-    MonthlyRate INT,
-    NumCompaniesWorked INT,
-    PercentSalaryHike INT,
-    PerformanceRating INT,
-    RelationshipSatisfaction INT,
-    StandardHours INT,
-    StockOptionLevel INT,
-    TotalWorkingYears INT,
-    WorkLifeBalance INT,
-    YearsAtCompany INT,
-    YearsInCurrentRole INT,
-    YearsSinceLastPromotion INT,
-    YearsWithCurrManager INT
-);
-```
-![screenshot](screenshots/placeholder.png)
-
-### Bulk insert data into the table
-```sql
-BULK INSERT EmployeeData
-FROM 'C:\Users\Administrator\Downloads\HR_Employee1.csv'
-WITH
-(
-    FIELDTERMINATOR = ',',  ### Delimiter for fields
-    ROWTERMINATOR = '0x0a', ### End of each row
-    FIRSTROW = 2            ### Skip header row
-);
-```
-![screenshot](screenshots/placeholder.png)
-
 ### a. Return the shape of the table 
 
 ```sql
@@ -74,7 +7,7 @@ SELECT
     (SELECT COUNT(*) FROM EmployeeData) AS row_bo,
     (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'EmployeeData') AS no_columns;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_A.png)
 
 ### b. Calculate the cumulative sum of total working years for each department
 
@@ -85,9 +18,9 @@ SELECT
     SUM(TotalWorkingYears) OVER (PARTITION BY Department ORDER BY TotalWorkingYears ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS Cumulative_sum_year
 FROM EmployeeData;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_B.PNG)
 
-### 3. Which Gender Has Higher Strength as Workforce in Each Department
+### c. Which Gender Has Higher Strength as Workforce in Each Department
 
 ```sql
 WITH GenderCounts AS (
@@ -110,14 +43,13 @@ SELECT
 	 RANK() OVER (PARTITION BY Department ORDER BY counts DESC) AS Gender_Rank
 FROM GenderCounts;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_C.PNG)
 
-### 4. Create a New Column `AGE_BAND` and Show Distribution of Employee's Age Band Group
+### d. Create a New Column `AGE_BAND` and Show Distribution of Employee's Age Band Group
 ```sql
 ALTER TABLE EmployeeData
 ADD Age_Band NVARCHAR(50);
 ```
-![screenshot](screenshots/placeholder.png)
 
 ```sql
 UPDATE EmployeeData
@@ -135,10 +67,9 @@ SELECT
 FROM EmployeeData
 GROUP BY Age_Band;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_D.PNG)
 
-### 5. Compare All Marital Status of Employees and Find the Most Frequent Marital Status
-### Query to get marital status count and frequency rank
+### e. Compare All Marital Status of Employees and Find the Most Frequent Marital Status
 ```sql
 SELECT 
     MaritalStatus,
@@ -152,9 +83,10 @@ FROM (
     GROUP BY MaritalStatus
 ) AS _
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_E.PNG)
 
-### 6. Show the Job Role with Highest Attrition Rate (Percentage)
+- Most frequent marital status is "Married"
+### f. Show the Job Role with Highest Attrition Rate (Percentage)
 ```sql
 WITH AttritionRate AS (
     SELECT 
@@ -169,21 +101,59 @@ SELECT TOP 1
 FROM AttritionRate
 ORDER BY Attrition_Percentage DESC;
 ```
-![screenshot](screenshots/placeholder.png)
 
-### 7. Show Distribution of Employee's Promotion, Find the Maximum Chances of Employee Getting Promoted
+![screenshot](img/problem_F.PNG)
+- Sales Represetatives have the highest attrition rate
+
+### **g. Show Distribution of Employee's Promotion, Find the Maximum Chances of Employee Getting Promoted**
+
 ```sql
-SELECT YearsSinceLastPromotion, COUNT(*) AS EmployeeCount
+SELECT 
+	Department,
+	YearsSinceLastPromotion, 
+	COUNT(*) AS EmployeeCount
 FROM EmployeeData
-GROUP BY YearsSinceLastPromotion
-ORDER BY YearsSinceLastPromotion;
+WHERE YearsSinceLastPromotion = 0
+GROUP BY Department, YearsSinceLastPromotion
+ORDER BY Department, YearsSinceLastPromotion;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_G.PNG)
 
-### 8. Show the Cumulative Sum of Total Working Years for Each Department
+>Insight: From above data we can see that most employees from R&D Department got a most recent promotion.
 
+```sql
+SELECT 
+	Department,
+	JobRole,
+	YearsSinceLastPromotion, 
+	COUNT(*) AS EmployeeCount
+FROM EmployeeData
+GROUP BY Department ,JobRole, YearsSinceLastPromotion
+ORDER BY EmployeeCount DESC;
+```
+![screenshot](img/problem_G_1.PNG)
+> From further analyzing the data, we can observe that  large number of Laboratory Technicians from R&D, Sales Executives from Sales and Research Scientists from R&D Department got recent promotions.
 
-### 9. Find the Rank of Employees Within Each Department 
+```sql
+SELECT 
+	JobInvolvement,
+	PerformanceRating,
+	YearsSinceLastPromotion, 
+	COUNT(*) AS EmployeeCount
+FROM EmployeeData
+GROUP BY 
+	PerformanceRating,
+	JobInvolvement,
+	YearsSinceLastPromotion
+ORDER BY YearsSinceLastPromotion, EmployeeCount DESC;
+```
+![screenshot](img/problem_G_2.PNG)
+> From Employees who got recent promotions, we can observe their Jobinvolment and Perfomrance Rating is 3.
+### h. Show the Cumulative Sum of Total Working Years for Each Department
+
+- duplicate of b
+
+### **i. Find the Rank of Employees Within Each Department**
 Based on Their Monthly Income
 
 ```sql
@@ -194,9 +164,9 @@ SELECT
     RANK() OVER (PARTITION BY Department ORDER BY MonthlyIncome DESC) AS Income_Rank
 FROM EmployeeData;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_I.PNG)
 
-### 10. Calculate the Running Total of 'Total Working Years' for Each Employee Within Each Department and Age Band
+### j. Calculate the Running Total of 'Total Working Years' for Each Employee Within Each Department and Age Band
 ```sql
 SELECT 
     EmployeeNumber,
@@ -206,10 +176,9 @@ SELECT
     SUM(TotalWorkingYears) OVER (PARTITION BY Department, AGE_BAND ORDER BY EmployeeNumber) AS Running_Total_Working_Years
 FROM EmployeeData;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_J.PNG)
 
-### 11. For Each Employee Who Left, Calculate the Number of Years They Worked Before Leaving 
-### and Compare It with the Average Years Worked by Employees in the Same Department
+### k. For Each Employee Who Left, Calculate the Number of Years They Worked Before Leaving and Compare It with the Average Years Worked by Employees in the Same Department
 
 ```sql
 WITH YearsWorked AS (
@@ -238,9 +207,13 @@ ORDER BY
 	Department,
 	Years_Worked_Before_Leaving;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_K.PNG)
+- In each department, employees worked for an average of 11 years.
 
-### 12. Rank the Departments by the Average Monthly Income of Employees Who Have Left
+![screenshot](img/problem_K_1.PNG)
+- We can also observe sales and R&D have more employees that worked more than average years.
+
+### l. Rank the Departments by the Average Monthly Income of Employees Who Have Left
 
 ```sql
 WITH DepartmentIncome AS (
@@ -257,9 +230,11 @@ SELECT
     RANK() OVER (ORDER BY Avg_Monthly_Income DESC) AS Department_Rank
 FROM DepartmentIncome;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_L.PNG)
+- Sales have the employees who left with highest average monthly income followed by R&D.
+- In HR Department, average income of employees who left are comparatively low.
 
-### 13. Find If There Is Any Relation Between Attrition Rate and Marital Status of Employee
+### m. Find If There Is Any Relation Between Attrition Rate and Marital Status of Employee
 ```sql
     SELECT 
         MaritalStatus,
@@ -267,12 +242,14 @@ FROM DepartmentIncome;
     FROM EmployeeData
     GROUP BY MaritalStatus;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_M.PNG)
 
-### Insight:
-### Attrition rate is higher in Singles. Attrition rate is lower in Married and Divorced.
+- Insight:
+> Attrition rate is higher in Singles.\
+> Attrition rate is lower in Married and Divorced.
 
-### 14. Show the Department with Highest Attrition Rate (Percentage)
+
+### n. Show the Department with Highest Attrition Rate (Percentage)
 ```sql
     SELECT TOP 1 
         Department,
@@ -281,44 +258,39 @@ FROM DepartmentIncome;
     GROUP BY Department
 	ORDER BY Attrition_Percentage DESC;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_N.PNG)
 
-### 15. Calculate the Moving Average of Monthly Income Over the Past 3 Employees for Each Job Role
+### o. Calculate the Moving Average of Monthly Income Over the Past 3 Employees for Each Job Role
+
 ```sql
-WITH RankedEmployees AS (
-    SELECT
-        JobRole,
-        MonthlyIncome,
-        ROW_NUMBER() OVER (PARTITION BY JobRole ORDER BY EmployeeNumber DESC) AS rn
-    FROM EmployeeData
-)
-SELECT
-    JobRole,
-    MonthlyIncome,
-    AVG(MonthlyIncome) OVER (PARTITION BY JobRole ORDER BY rn ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS MovingAverage
-FROM RankedEmployees;
-```
-![screenshot](screenshots/placeholder.png)
-###-
-```sql
-WITH MovingAvg AS (
+WITH LaggedData AS (
     SELECT 
         JobRole,
         EmployeeNumber,
         MonthlyIncome,
-        AVG(MonthlyIncome) OVER (PARTITION BY JobRole ORDER BY EmployeeNumber ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS Moving_Avg_Income
-    FROM EmployeeData
+        LAG(MonthlyIncome, 1) OVER (PARTITION BY JobRole ORDER BY EmployeeNumber) AS PrevIncome1,
+        LAG(MonthlyIncome, 2) OVER (PARTITION BY JobRole ORDER BY EmployeeNumber) AS PrevIncome2
+    FROM 
+        EmployeeData
 )
 SELECT 
-    JobRole,
-    EmployeeNumber,
-    MonthlyIncome,
-    Moving_Avg_Income
-FROM MovingAvg;
+	JobRole,
+	EmployeeNumber,
+	PrevIncome1,
+	PrevIncome2,
+	MonthlyIncome,
+	(COALESCE(MonthlyIncome, 0) + COALESCE(PrevIncome1, 0) + COALESCE(PrevIncome2, 0)) / 
+	(CASE
+		WHEN PrevIncome2 IS NOT NULL THEN 3
+		WHEN PrevIncome1 IS NOT NULL THEN 2
+		ELSE 1
+	END) AS MovingAverageMonthlyIncome
+FROM 
+	LaggedData;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_O.PNG)
 
-### 16. Identify Employees with Outliers in Monthly Income Within Each Job Role
+### **p. Identify Employees with Outliers in Monthly Income Within Each Job Role**
 ```sql
 WITH IncomeStats AS (
     SELECT 
@@ -342,9 +314,9 @@ FROM IncomeStats
 WHERE MonthlyIncome < Q1 - (Q3 - Q1) * 1.5
    OR MonthlyIncome > Q3 + (Q3 - Q1) * 1.5;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_P.PNG)
 
-### 17. Gender Distribution Within Each Job Role, Show Each Job Role with Its Gender Domination
+### **q. Gender Distribution Within Each Job Role, Show Each Job Role with Its Gender Domination**
 ```sql
 WITH GenderCount AS
 (
@@ -365,9 +337,9 @@ SELECT
 FROM
 	GenderCount;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_Q.PNG)
 
-### 18. Percent Rank of Employees Based on Training Times Last Year
+### **r. Percent Rank of Employees Based on Training Times Last Year**
 ```sql
 SELECT 
     EmployeeNumber,
@@ -375,9 +347,9 @@ SELECT
     PERCENT_RANK() OVER (ORDER BY TrainingTimesLastYear) * 100 AS PercentRank
 FROM EmployeeData;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_R.PNG)
 
-### 19. Divide Employees into 5 Groups Based on Training Times Last Year
+### s. Divide Employees into 5 Groups Based on Training Times Last Year
 ```sql
 SELECT 
     EmployeeNumber,
@@ -385,30 +357,24 @@ SELECT
     NTILE(5) OVER (ORDER BY TrainingTimesLastYear) AS Training_Group
 FROM EmployeeData;
 ```
-![screenshot](screenshots/placeholder.png)
-### 20. Categorize Employees Based on Training Times Last Year as - Frequent Trainee, Moderate Trainee, Infrequent Trainee
+![screenshot](img/problem_S.PNG)
+
+### t. Categorize Employees Based on Training Times Last Year as - Frequent Trainee, Moderate Trainee, Infrequent Trainee
 ```sql
-WITH TrainingTimeTiling AS
-(
-SELECT 
-    EmployeeNumber,
-    TrainingTimesLastYear,
-    NTILE(3) OVER (ORDER BY TrainingTimesLastYear) AS TrainingTile
-FROM EmployeeData
-)
 SELECT 
     EmployeeNumber,
     TrainingTimesLastYear,
     CASE 
-        WHEN TrainingTile = 3 THEN 'Frequent Trainee'
-        WHEN TrainingTile = 2 THEN 'Moderate Trainee'
-        ELSE 'Infrequent Trainee'
+        WHEN TrainingTimesLastYear <= 2  THEN 'Infrequent Trainee'
+        WHEN TrainingTimesLastYear <= 4 THEN 'Moderate Trainee'
+        ELSE 'Frequent Trainee'
     END AS TraineeCategory
-FROM TrainingTimeTiling;
+FROM EmployeeData
+ORDER BY TrainingTimesLastYear DESC;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_T.PNG)
 
-### 21. Categorize Employees as 'High', 'Medium', or 'Low' Performers Based on Their Performance Rating
+### u. Categorize Employees as 'High', 'Medium', or 'Low' Performers Based on Their Performance Rating
 
 ```sql
 SELECT 
@@ -419,32 +385,12 @@ SELECT
         WHEN PerformanceRating = 3 THEN 'Medium'
         ELSE 'Low'
     END AS PerformanceCategory
-FROM EmployeeData;
-```
-![screenshot](screenshots/placeholder.png)
-###-
-```sql
-WITH PerformanceCategories AS
-(
-SELECT 
-    EmployeeNumber,
-    PerformanceRating,
-	NTILE(3) OVER(ORDER BY PerformanceRating DESC) AS Tile
 FROM EmployeeData
-)
-SELECT
-	EmployeeNumber,
-    PerformanceRating,
-	CASE 
-	    WHEN Tile = 1 THEN 'High'
-        WHEN TIle = 2 THEN 'Medium'
-        ELSE 'Low'
-    END AS PerformanceCategory
-FROM PerformanceCategories;
+ORDER BY PerformanceRating DESC;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_U.PNG)
 
-### 22. Use a CASE WHEN Statement to Categorize Employees into 'Poor', 'Fair', 'Good', or 'Excellent' Work-Life Balance Based on Their Work-Life Balance Score
+### v. Use a CASE WHEN Statement to Categorize Employees into 'Poor', 'Fair', 'Good', or 'Excellent' Work-Life Balance Based on Their Work-Life Balance Score
 ```sql
 SELECT 
     EmployeeNumber,
@@ -455,11 +401,12 @@ SELECT
         WHEN WorkLifeBalance = 3 THEN 'Good'
         ELSE 'Excellent'
     END AS Work_Life_Balance_Category
-FROM EmployeeData;
+FROM EmployeeData
+ORDER BY WorkLifeBalance DESC;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_V.PNG)
 
-### 23. Group Employees into 3 Groups Based on Their Stock Option Level Using the [NTILE] Function
+### w. Group Employees into 3 Groups Based on Their Stock Option Level Using the [NTILE] Function
 ```sql
 SELECT 
     EmployeeNumber,
@@ -467,9 +414,9 @@ SELECT
     NTILE(3) OVER (ORDER BY StockOptionLevel) AS StockOption_Group
 FROM EmployeeData;
 ```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_W.PNG)
 
-### 24. Find Key Reasons for Attrition in Company
+### **x. Find Key Reasons for Attrition in Company**
 ```sql
 SELECT 
     Attrition, 
@@ -484,8 +431,10 @@ WHERE Attrition = 'Yes'
 GROUP BY Attrition, BusinessTravel, Department, MaritalStatus, JobRole
 ORDER BY Count DESC;
 ```
-![screenshot](screenshots/placeholder.png)
-###
+![screenshot](img/problem_X_1.PNG)
+- insights:
+> From the first table we can observe that the most of the employees left are not married and are from Sales or R&D Department.
+
 ```sql
 WITH WorkingYears AS
 (
@@ -504,7 +453,7 @@ FROM
 SELECT 
     Attrition,
 	WorkingYearBand,
-    COUNT(*) AS Total_Employees,
+    COUNT(*) AS Total_Left_Employees,
     AVG(Age) AS Avg_Age,
     AVG(MonthlyIncome) AS Avg_MonthlyIncome,
     AVG(WorkLifeBalance) AS Avg_WorkLifeBalance,
@@ -515,26 +464,9 @@ SELECT
 FROM WorkingYears
 WHERE Attrition = 'Yes'
 GROUP BY Attrition, WorkingYearBand
-ORDER BY Attrition, WorkingYearBand, Total_Employees DESC;
+ORDER BY Total_Left_Employees, WorkingYearBand DESC;
 ```
-![screenshot](screenshots/placeholder.png)
-###-
-```sql
-SELECT 
-    Attrition,
-	YearsAtCompany,
-    COUNT(*) AS Total_Employees,
-    AVG(Age) AS Avg_Age,
-    AVG(MonthlyIncome) AS Avg_MonthlyIncome,
-    AVG(WorkLifeBalance) AS Avg_WorkLifeBalance,
-    AVG(JobSatisfaction) AS Avg_JobSatisfaction,
-    AVG(EnvironmentSatisfaction) AS Avg_EnvironmentSatisfaction,
-    AVG(JobInvolvement) AS Avg_JobInvolvement,
-    AVG(PerformanceRating) AS Avg_PerformanceRating
-FROM EmployeeData
-WHERE Attrition = 'Yes'
-GROUP BY Attrition, YearsAtCompany
-ORDER BY Attrition, YearsAtCompany, Total_Employees DESC;
-```
-![screenshot](screenshots/placeholder.png)
+![screenshot](img/problem_X_2.PNG)
 
+- Insight:
+> It is clear that most of the employees who left the company are worked between 0 to 10 year in the company and they also have a lower average monthly income.
