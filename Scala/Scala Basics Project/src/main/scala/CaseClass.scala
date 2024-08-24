@@ -1,3 +1,7 @@
+/* they are special kind of class that is used for modeling immutable data structures
+ * will automatically provide useful methods:
+ * to string, equals, hashCode, pattern matching
+ */
 case class Person(name: String, age:Int)
 
 object CaseClass extends App {
