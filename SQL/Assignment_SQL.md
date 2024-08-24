@@ -150,11 +150,18 @@ ORDER BY YearsSinceLastPromotion, EmployeeCount DESC;
 ![screenshot](img/problem_G_2.PNG)
 > From Employees who got recent promotions, we can observe their Jobinvolment and Perfomrance Rating is 3.
 ### h. Show the Cumulative Sum of Total Working Years for Each Department
-
 - duplicate of b
 
-### **i. Find the Rank of Employees Within Each Department**
-Based on Their Monthly Income
+```sql
+SELECT 
+    Department,
+    TotalWorkingYears,
+    SUM(TotalWorkingYears) OVER (PARTITION BY Department ORDER BY TotalWorkingYears ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS Cumulative_sum_year
+FROM EmployeeData;
+```
+![screenshot](img/problem_H.PNG)
+
+### **i. Find the Rank of Employees Within Each Department Based on Their Monthly Income**
 
 ```sql
 SELECT 
@@ -165,15 +172,18 @@ SELECT
 FROM EmployeeData;
 ```
 ![screenshot](img/problem_I.PNG)
+> Employee 1338 have higest income, followed by 1625
 
 ### j. Calculate the Running Total of 'Total Working Years' for Each Employee Within Each Department and Age Band
 ```sql
 SELECT 
     EmployeeNumber,
     Department,
-    AGE_BAND,
+    CF_age_band,
     TotalWorkingYears,
-    SUM(TotalWorkingYears) OVER (PARTITION BY Department, AGE_BAND ORDER BY EmployeeNumber) AS Running_Total_Working_Years
+    SUM(TotalWorkingYears) 
+	OVER (PARTITION BY Department, CF_AGE_BAND ORDER BY TotalWorkingYears ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
+	AS Running_Total_Working_Years
 FROM EmployeeData;
 ```
 ![screenshot](img/problem_J.PNG)
@@ -192,26 +202,22 @@ WITH YearsWorked AS (
 AvgYears AS (
     SELECT 
         Department,
-        AVG(TotalWorkingYears) AS Avg_Years_Worked
-    FROM EmployeeData
+        AVG(Years_Worked_Before_Leaving) AS Avg_Years_Worked
+    FROM YearsWorked
     GROUP BY Department
 )
 SELECT 
-    Y.EmployeeNumber,
+	Y.EmployeeNumber,
     Y.Department,
-    Y.Years_Worked_Before_Leaving,
-    A.Avg_Years_Worked
+	Y.Years_Worked_Before_Leaving,
+	A.Avg_Years_Worked,
+	A.Avg_Years_Worked - Y.Years_Worked_Before_Leaving AS Diff
 FROM YearsWorked Y, AvgYears A
-WHERE Y.Department = A.Department AND Y.Years_Worked_Before_Leaving IS NOT NULL
-ORDER BY
-	Department,
-	Years_Worked_Before_Leaving;
+WHERE Y.Department = A.Department 
+ORDER BY Department, Diff;
 ```
 ![screenshot](img/problem_K.PNG)
-- In each department, employees worked for an average of 11 years.
 
-![screenshot](img/problem_K_1.PNG)
-- We can also observe sales and R&D have more employees that worked more than average years.
 
 ### l. Rank the Departments by the Average Monthly Income of Employees Who Have Left
 
@@ -259,6 +265,7 @@ FROM DepartmentIncome;
 	ORDER BY Attrition_Percentage DESC;
 ```
 ![screenshot](img/problem_N.PNG)
+> Sales department have highest attrition rate.
 
 ### o. Calculate the Moving Average of Monthly Income Over the Past 3 Employees for Each Job Role
 
@@ -338,6 +345,7 @@ FROM
 	GenderCount;
 ```
 ![screenshot](img/problem_Q.PNG)
+> Insight every department in male dominated.
 
 ### **r. Percent Rank of Employees Based on Training Times Last Year**
 ```sql
