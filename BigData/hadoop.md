@@ -162,3 +162,71 @@ flowchart TD
 - NameNode picks datanodes nearest to it
 - NameNode distributes datanodes in a such way that all of the resources will be equally utilised by the name node
 - same datablock will be never replicated in the same data node
+  
+> If any data nodes goes down the block present in the datanode will be replicated in other available datanodes.
+
+**concept of multple NameNodes:**
+- Active NameNode
+- Secondary NameNode
+
+```mermaid
+---
+title: High Availablility Architecture of HDFS
+---
+graph TD
+  subgraph mn2["Secondary NameNode"]
+    fsi2[Fsimage] --- el2[Edit logs]
+    end
+  subgraph mn1["Active NameNode"]
+    fsi1[Fsimage] --- el1[Edit logs]
+    end
+  subgraph mn3["Standby NameNode"]
+    fsi3[Fsimage]
+    end
+
+  
+  mn1 --> zl["zoo keeper(Leader)"]
+  mn2 --> zl
+  mn3 --> zl
+  zf["zoo keepr(Follower)"] --- zl
+
+
+```
+
+
+Fsimage: permenant storage\
+Edit logs: Read write by user, not saved yet
+at a regular intervel the file will be replicated and stored in other
+- at regular intervals fsimage will be copied to secondary NameNode
+- same fsimage is stored in standby NameNode also.
+
+```mermaid
+flowchart RL
+    subgraph ActiveNameNode
+        A1[Edit Logs]
+        A2[FSImage]
+    end
+
+    subgraph SecondaryNameNode
+        B1[FSImage]
+    end
+
+    subgraph StandbyNameNode
+        C1[FSImage]
+    end
+
+    A1 -->|Transforms to| A2
+    A2 -->|At regular intervals| B1
+    A2 -->|At regular intervals| C1
+```
+
+**Check pointing**
+- The primary function of secondary NameNode is to perform checkpointing
+- it involves periodically merging NameNodes edit logs(changes in the file system) with current file system (FSImages)
+- NameNode keeps edit log of all modifications made to the file system. Over time this log can grow large, hence we secondary NameNode helps to convert this edit logs into file system(FSImage) by creating checkpointing.   
+- Overtime if edit logs can grow large, NameNodes will take more time to convert it into FSImage by restrating it, during tihs phase cluster will be down.
+- Secondary NameNode helps is reducing recovery time of the cluster.
+- Due to checkpointing, the downtime of cluster minimizes.
+
+FsImages:
+- File System Napespace - path to file system in clusters DataNode. (Replicas, Replica Path, File System)
