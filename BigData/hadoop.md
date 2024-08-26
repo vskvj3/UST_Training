@@ -200,26 +200,6 @@ at a regular intervel the file will be replicated and stored in other
 - at regular intervals fsimage will be copied to secondary NameNode
 - same fsimage is stored in standby NameNode also.
 
-```mermaid
-flowchart RL
-    subgraph ActiveNameNode
-        A1[Edit Logs]
-        A2[FSImage]
-    end
-
-    subgraph SecondaryNameNode
-        B1[FSImage]
-    end
-
-    subgraph StandbyNameNode
-        C1[FSImage]
-    end
-
-    A1 -->|Transforms to| A2
-    A2 -->|At regular intervals| B1
-    A2 -->|At regular intervals| C1
-```
-
 **Check pointing**
 - The primary function of secondary NameNode is to perform checkpointing
 - it involves periodically merging NameNodes edit logs(changes in the file system) with current file system (FSImages)
@@ -228,5 +208,11 @@ flowchart RL
 - Secondary NameNode helps is reducing recovery time of the cluster.
 - Due to checkpointing, the downtime of cluster minimizes.
 
-FsImages:
+**FsImages:**
 - File System Napespace - path to file system in clusters DataNode. (Replicas, Replica Path, File System)
+- Older version of HDFS cluster used to be down frequently as logs and FSimage take space in Memory(RAM), due to shortage of RAM, cluster used to go down.
+- This got resolved in hadoop 2 , after introducing second NameNode concept.
+
+**Zoo keeper**
+- acts as a coordinator that will monitor health of active NameNode and it makes decision of automatic failover where it will replace exiting NameNode with StandBy NameNode. 
+- zookeeper has (follower: backup, leader: connecterd to clusters name node).
