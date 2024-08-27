@@ -216,3 +216,14 @@ at a regular intervel the file will be replicated and stored in other
 **Zoo keeper**
 - acts as a coordinator that will monitor health of active NameNode and it makes decision of automatic failover where it will replace exiting NameNode with StandBy NameNode. 
 - zookeeper has (follower: backup, leader: connecterd to clusters name node).
+
+#### Hadoop Ecosystem
+- Workflow and job scheduling
+  - Air flow
+  - apache oozie
+- NoSQL Database
+  - Apache HBase
+- Zookeeper
+  - Cooordinator
+  - coordinate b/w all the processes
+- 
