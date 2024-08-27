@@ -92,3 +92,65 @@ hdfs dfs -chmod 777 file.txt
 ```bash
 hdfs dfs -chown user:group file.txt
 ```
+
+- view status
+```bash
+hdfs dfs -stat file.txt
+```
+
+number of replications
+```bash
+hdfs dfs -stat %r filename.txt
+```
+
+file size
+```bash
+hdfs dfs -stat %b filename.txt
+```
+
+- set number of replicas
+create 3 replicas:
+```bash
+hdfs dfs -setrep 3 filename.txt
+```
+
+- show the amount of size in bytes
+- for each folder and each file
+```bash
+hdfs dfs -du -h /
+```
+
+- for the entire cluster
+```bash
+hdfs dfs -df -h 
+```
+
+- num of dirs and num of files
+```bash
+hdfs dfs -count /
+```
+num of dir - num of file - size
+
+- fsck
+```bash
+hdfs fsck /
+```
+
+- fsck for all files and dirs
+```bash
+hdfs fsck / -files
+```
+
+```bash
+hdfs fsck / -files -blocks -locations
+```
+
+```bash
+hdfs fsck / -files -blocks -locations -racks
+```
+
+HDFS Balancer utility
+```bash
+hdfs balancer -threshold 1
+```
+
