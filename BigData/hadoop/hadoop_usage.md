@@ -154,3 +154,6 @@ HDFS Balancer utility
 hdfs balancer -threshold 1
 ```
 
+```bash
+hadoop fs -Ddfs.blocksize=<blocksize in bytes> -put /home/path /hdfs
+```
