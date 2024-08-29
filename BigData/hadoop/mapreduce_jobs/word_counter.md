@@ -17,6 +17,9 @@ for line in sys.stdin:
 	# Output of Mapper Job is input to Reducer <--
         print('%s\t%s' % (word, 1))
 ```
+- output of mapper will be a list of key value pairs.
+- each key will be a word and value will be 1
+- eg: (the, 1), (onam, 1)
 - output of the mapper will be in sorted order by country name(keys)
 
 ### Reducer
@@ -62,22 +65,31 @@ for line in sys.stdin:
 if current_word == word:
     print ('%s\t%s' % (current_word, current_count))
 ```
+- reducer will reduce the outpur from the mapper together
+- because output of the mapper will be in sorted order
+- we can group same words and add up their keys(each will be 1) to get the total count of the words
 
-- testing in local:
+### testing in local:
 ```bash
 cat ~/Downloads/sample.txt | ./mapper.py | sort -k1,1 | ./reducer.py | sort -k2,2rn
 ```
-
+- because our reducer compares previous words with current, we need to sort our mapper output by keys(first column which is the country name)
 ### Running in hadoop
 1. first upload the dataset to hdfs
 ```bash
-hdfs dfs -put ./employeer.csv /wordcount
+hdfs dfs -mkdir /wordcount
+hdfs dfs -put ./sample.txt /wordcount
 ```
 - here wordcount is a dir in hdfs
 2. run mapreduce job
 ```bash
 hadoop jar /path/to/hadoop-streaming.jar -file ./mapper.py -mapper mapper.py -file ./reducer.py -reducer reducer.py -input /wordcount/sample.txt -ouput /wordcount/output
 ```
+- `-input`: The path to the input data in HDFS.
+- `-output`: The path where the output will be written in HDFS.
+- `-mapper`: Path to the mapper script.
+- `-reducer`: Path to the reducer script.
+- `-file`: Specifies that the mapper and reducer scripts that should be distributed to the cluster. (here it can be path or the name inside docstring)
 
 hadoop streaming will be stored in:
 ```bash
