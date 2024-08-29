@@ -157,3 +157,14 @@ hdfs balancer -threshold 1
 ```bash
 hadoop fs -Ddfs.blocksize=<blocksize in bytes> -put /home/path /hdfs
 ```
+
+- Running mapReduce job
+```bash
+hadoop jar /path/to/hadoop-streaming.jar -file /path/to/mapper.py -mapper mapper.py -file /path/to/reducer.py -reducer reducer.py -input /hadoop/path/to/input.txt -ouput /hadoop/path/to/output/
+```
+Notice the -mapper and -reducer
+it specifies the file descriptiong provided as docstring in the mapper and reducer file
+like:
+```python
+"""mapper.py"""
+```
