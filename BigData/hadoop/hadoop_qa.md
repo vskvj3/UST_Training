@@ -1,0 +1,34 @@
+- how does hadoop achieve fault tolerence?
+  - replicas of datablocks across multiple data nodes
+  - Secondary name node
+
+- if a files size 129 MB, how many data blocks will be created?
+  - 2 datablocks (128 MB + 1 MB)
+- how does hadoop handles data consistency?
+  - write once and read many 
+  - once a file is writed in HDFS it cannot be modified (it can only be deleted or replaced). It ensures that all data nodes read the same version of the file. 
+- How does YARN differ from original mapReduce framework in version 1? 
+  - In v1 only job tracker was resplonsible for both resource management and job scheduling, this lead to scalability, regular job failures due to over burden on tracker.
+  - YARN Split this:
+    - Resource manager:
+      - job scheduling
+      - resource management
+      - monitoring
+    - App master:
+      - job executing
+      - negotiation of resources with resource manager.
+  - Better scalability and flexibility
+- Suppose mapreduce job has 10 map tasks and 5 reduce tasks. if one of the node running map fails what impact it will have on overall job execution and how does hadoop handle it?
+  - If a node running map task fails, hadoop will reschedule failed map task on another available node.
+  - The system ensures job continues by rerunning only failed map task - fault tolerance mechanism ensures, that overall job execution is resilient to individual node failure.
+- In a hadoop cluster, where multiple applications are running simultaneously, what would be impact of increasing replication factor of HDFS on overall system performance?
+  - positive:
+    - improve data reliability and fault tolerance by storing more copies.
+  - negative:
+    - storage utilization
+    - write performance (more files will perform write operation)
+    - network traffic
+- How do you optimize performance of mapreduce job that can be run in longer than expected?
+  - Resource allocation: CPU, Memory.
+  - Data Locality: minimize data transfer across the network by ensuring the task run on nodes where the data is located 
+  - Balancing the number of maps and reduces, tasks that are aligned with clusters capacity.
