@@ -148,3 +148,30 @@ YARN Deployment Modes:
 - client mode
 - 
 - cluster mode
+
+When we start spark shell or pyspark, it starts two sessions by default:
+1. spark context
+2. spark session 
+
+- sc needs to running always
+
+Cluster manager:
+- by deault it is in standalone mode
+
+Spark Context:
+- Spark context is the crucial component which represents connection to the spark cluster. 
+- It is an entry point for using spark API, spark methodes.
+- It is responsible for maintaining life cycle of the spark application
+- It handles allocation of the resouces which are required by executors. 
+- This manages Configuration for spark application. 
+- RDD Resilient Distributed Dataset(core dataset of spark)
+- RDD is the fundamental dataset of spark.
+Cluster Manager:
+- It schedules and dispatches tasks and jobs to the worker nodes. It ensures the tasks are distributed among the worker nodes. 
+- Scaling: cluster manager is responsible for the scaling responsible up and down depending on the work load and demand.
+- Handles Fault tolerence
+- if job fails it can reschedule the task.
+- Resource mangement(optmization of resources)
+- monitors and manages the resources are utilzed efficiently
+- Ensures resources are used efficient 
+
