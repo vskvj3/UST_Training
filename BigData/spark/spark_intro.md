@@ -175,3 +175,26 @@ Cluster Manager:
 - monitors and manages the resources are utilzed efficiently
 - Ensures resources are used efficient 
 
+#### Python to byte code
+```mermaid
+flowchart LR
+  python --> PY4J-->Bytecode
+```
+
+#### Spark JOB execution flow:
+```mermaid
+flowchart TB
+  c[Code]--
+  Spark Submit-->dp["Spark Context\n(Driver Program)"]
+  dp--->js[Job Scheduling]--->dag[DAG]
+  dag--->sd[Stage Division]
+  sd-->task["Task Scheduling\n(DAG Scheduler)"]
+  task-->ex["Assign Task to executers"]
+  ex-->tq["Task Queueing(FIFO)"]
+  tq-->w1[worker1]
+  tq-->w2[worker2]
+```
+
+- between workers, there will be shuffling
+- Each workers have executors
+- DAGs are physical execution plans
