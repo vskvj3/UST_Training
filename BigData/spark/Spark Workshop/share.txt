@@ -1,0 +1,2 @@
+config = SparkConf().setMaster('local[2]').setAppName("RDDSession")
+sc = SparkContext(conf=config)

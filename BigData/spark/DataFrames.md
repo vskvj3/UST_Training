@@ -1,0 +1,5 @@
+- seems like relational table in RDBMS but with richer optimizations under the hood.
+- like an upgraded version of RDD
+- can connect to hive or existig RDD, hbase, SQL, read data from databases also.
+- can construct from file, hive, exisiting rdd, or external databases.
+- can convert into RDD format by calling RDD method.
