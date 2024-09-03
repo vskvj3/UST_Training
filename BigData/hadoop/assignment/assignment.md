@@ -85,26 +85,35 @@ hdfs dfs -rm -r /hadoop/hdfs/
 
 #### m) List the files and show Format file sizes in a human-readable fashion.
 ```bash
+hdfs dfs -ls -h /hadoop/
 ```
-![alt]()
+![alt](images/qm.PNG)
 
 #### n) Take a source file and outputs the file in text format on the terminal.
 ```bash
+# display source file in local
+cat sample.txt
 ```
-![]()
-#### o) Display the content of the HDFS file test on your /user/hadoop2 directory.
+![alt](images/qn.PNG)
 
+#### o) Display the content of the HDFS file test on your /user/hadoop2 directory.
 ```bash
+# displaying content of file in hdfs
+hdfs dfs -cat /hadoop2/sample.txt
 ```
-![]()
+![alt](images/qo.PNG)
+
 #### p) Append the content of a local file test1 to a hdfs file test2.
 ```bash
 ```
 ![]()
+
 #### q) Show the capacity, free and used space of the filesystem
 ```bash
+hdfs dfs -df -h
 ```
-![]()
+![alt](images/qq.PNG)
+
 #### r) Shows the capacity, free and used space of the filesystem. Add parameter Formats the sizes of files in a human-readable fashion.
 ```bash
 ```
