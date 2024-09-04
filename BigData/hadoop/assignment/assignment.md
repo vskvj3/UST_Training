@@ -75,7 +75,9 @@ hdfs dfs -copToLocal /hadoop/hdfs/file.txt .
 
 #### k) Command to move from local directory source to Hadoop directory.
 ```bash
+hdfs dfs -moveFromLocal ./to_move /hadoop/hdfs/
 ```
+![alt](images/qk.PNG)
 
 #### l) Deletes the directory and any content under it recursively.
 ```bash
@@ -116,38 +118,52 @@ hdfs dfs -df -h
 
 #### r) Shows the capacity, free and used space of the filesystem. Add parameter Formats the sizes of files in a human-readable fashion.
 ```bash
+hdfs dfs -df -h
 ```
-![]()
+![alt](images/qq.PNG)
+
 #### s) Show the amount of space, in bytes, used by the files that match the specified file pattern.
 ```bash
+hdfs dfs -du -s /hadoop/hdfs/*txt
 ```
-![]()
+![alt](images/qs.PNG)
+
 #### t) Show the amount of space, in bytes, used by the files that match the specified file pattern. Formats the sizes of files in a human-readable fashion.
 ```bash
+hdfs dfs -du -h /hadoop/hdfs/*txt
 ```
-![]()
+![qt](images/qt.PNG)
+
 #### u) Check the health of the Hadoop file system.
 ```bash
+hdfs fsck /
 ```
-![]()
+![alt](images/qu.PNG)
+
 #### v) Command to turn off the safemode of Name Node.
 ```bash
+hdfs dfsadmin -safemode leave
 ```
-![]()
+![alt](images/qv.PNG)
+
 #### w) HDFS command to format NameNode.
 ```bash
 ```
 ![]()
+
 #### x) Create a file named hdfstest.txt and change it number of replications to 3.
 ```bash
 ```
 ![]()
+
 #### y) Write command to display number of replicas for hdfstest.txt file.
 ```bash
 ```
 ![]()
+
 #### z) Write command to Display the status of file “hdfstest.txt” like block size, filesize in bytes.
 ```bash
 ```
 ![]()
+
 #### aa) Write HDFS command to change file permission from rw – r – r to rwx-rw-x for hdfstest.txt.
