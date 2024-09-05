@@ -153,17 +153,24 @@ hdfs dfsadmin -safemode leave
 
 #### x) Create a file named hdfstest.txt and change it number of replications to 3.
 ```bash
+hdfs dfs -setrep 3 /hadoop/hdfstest.txt
 ```
-![]()
+![alt](images/qx.PNG)
 
 #### y) Write command to display number of replicas for hdfstest.txt file.
 ```bash
+hdfs dfs -stat %r /hadoop/hdfstest.txt
 ```
-![]()
+![alt](images/qy.PNG)
 
 #### z) Write command to Display the status of file “hdfstest.txt” like block size, filesize in bytes.
 ```bash
+hdfs dfs -stat /hadoop/hdfstest.txt
 ```
-![]()
+![alt](images/qz.PNG)
 
 #### aa) Write HDFS command to change file permission from rw – r – r to rwx-rw-x for hdfstest.txt.
+```bash
+hdfs dfs -chmod 761 /hadoop/hdfstest.txt
+```
+![alt](images/qaa.PNG)
