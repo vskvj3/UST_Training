@@ -1,0 +1,58 @@
+### Mapper
+```python
+#!/usr/bin/python3
+"""mapper.py"""
+import sys
+# input comes from standard input
+for line in sys.stdin:
+    
+    line = line.strip()
+    
+    country = line.split(',')[-1]
+    
+    print('%s,%s' % (country, 1))
+```
+- output of the mapper will be in sorted order by key(here name of country)
+
+### Reducer
+```python
+#!/usr/bin/python3
+"""reducer.py"""
+import sys
+from collections import defaultdict
+
+current_word = None
+current_count = 0
+country = None
+countries = []
+
+# input comes from STDIN
+for line in sys.stdin:
+
+    line = line.strip()
+
+    country, count = line.split(',', 1)
+
+    try:
+        count = int(count)
+    except ValueError:
+        continue
+
+    # this IF-switch only works because Hadoop sorts map output
+    # by key (here key is word) before it is passed to the reducer
+    if current_country == country:
+        current_count += count
+    else:
+        if current_country:
+            countries.append((current_country, current_count))
+
+        current_count = count
+        current_country = country
+
+if current_country == country:
+    countries.append((current_country, current_count))
+
+countries.sort(key = lambda x: -x[1])
+for country in countries:
+	print("%s\t%s" % country)
+```
