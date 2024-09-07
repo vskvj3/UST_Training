@@ -148,6 +148,7 @@ hdfs dfsadmin -safemode leave
 
 #### w) HDFS command to format NameNode.
 ```bash
+hdfs dfsadmin -format
 ```
 ![]()
 
