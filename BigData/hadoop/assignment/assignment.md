@@ -67,11 +67,13 @@ hdfs dfs -get /hadoop/hdfs/temp.txt .
 ```bash
 hdfs dfs -copyFromLocal ./file.txt /hadoop/hdfs
 ```
+![alt text](images/qi.PNG)
 
 #### j) Command to copies to local directory with the source being restricted to a local file reference.
 ```bash
 hdfs dfs -copToLocal /hadoop/hdfs/file.txt .
 ```
+![alt text](images/qj.PNG)
 
 #### k) Command to move from local directory source to Hadoop directory.
 ```bash
@@ -107,8 +109,9 @@ hdfs dfs -cat /hadoop2/sample.txt
 
 #### p) Append the content of a local file test1 to a hdfs file test2.
 ```bash
+hdfs dfs -appendToFile ./to_append.txt /assignment/file.txt
 ```
-![]()
+![alt](images/qp.PNG)
 
 #### q) Show the capacity, free and used space of the filesystem
 ```bash
@@ -150,7 +153,7 @@ hdfs dfsadmin -safemode leave
 ```bash
 hdfs dfsadmin -format
 ```
-![]()
+![alt](images/qw.PNG)
 
 #### x) Create a file named hdfstest.txt and change it number of replications to 3.
 ```bash
