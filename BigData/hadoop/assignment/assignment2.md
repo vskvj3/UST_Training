@@ -1,3 +1,4 @@
+## Assignment 6 - FMCG MapReduce Analysis
 ### Task 1: Demand-Supply Mismatch Analysis
 - Objective: Identify zones and regional zones with the highest mismatch between demand and supply.
 - Required Fields: zone, WH_regional_zone, product_wg_ton
@@ -9,9 +10,41 @@ shipped in the last three months as the value.
 
 mapper:
 ```python
+#!/usr/bin/python3
+"""mapper.py"""
+import sys
+
+for line in sys.stdin:
+
+    try:
+        line = line.strip().split(',')
+
+        zone = line[4]
+        WH_regional_zone = line[5]
+        product_wg_ton = int(line[-1])
+    except:
+        continue
+
+    print('%s %s\t%s' % (zone, WH_regional_zone, product_wg_ton))
 ```
 reducer:
 ```python
+#!/usr/bin/python3
+"""mapper.py"""
+import sys
+
+for line in sys.stdin:
+
+    try:
+        line = line.strip().split(',')
+
+        zone = line[4]
+        WH_regional_zone = line[5]
+        product_wg_ton = int(line[-1])
+    except:
+        continue
+
+    print('%s %s\t%s' % (zone, WH_regional_zone, product_wg_ton))
 ```
 output
 ![]()
@@ -19,6 +52,7 @@ output
 ### Task 2: Warehouse Refill Frequency Correlation
 - Objective: Determine the correlation between warehouse capacity and refill frequency.
 - Required Fields: WH_capacity_size, num_refill_req_l3m
+
 **Description:**
 - Map: Extract the number of refill requests (num_refill_req_l3m) and warehouse capacity size
 (WH_capacity_size) for each warehouse. (For each warehouse, emit the capacity size and the
@@ -89,6 +123,7 @@ output
 ### Task 3. Transport Issue Impact Analysis
 Objective: Analyse the impact of transport issues on warehouse supply efficiency.
 - Required Fields: transport_issue_l1y, product_wg_ton
+
 **Description:**
 - Map: For each warehouse, emit whether a transport issue was reported and the product weight shipped.
 - Reduce: Aggregate the product weight by transport issue status to assess the impact.
@@ -156,7 +191,6 @@ output
 - Objective: Evaluate the impact of storage issues on warehouse performance.
 
 - Required Fields: storage_issue_reported_l3m, product_wg_ton
-
 
 **Description:**
 - Map: For each warehouse, emit whether a storage issue was reported and the product weightn shipped.
