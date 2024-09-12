@@ -30,24 +30,36 @@ for line in sys.stdin:
 reducer:
 ```python
 #!/usr/bin/python3
-"""mapper.py"""
+"""reducer.py"""
 import sys
+
+current_zone = None
+current_wg = 0
+word = None
 
 for line in sys.stdin:
 
-    try:
-        line = line.strip().split(',')
+    line = line.strip()
+    zone, product_wg = line.split('\t')
 
-        zone = line[4]
-        WH_regional_zone = line[5]
-        product_wg_ton = int(line[-1])
-    except:
+    try:
+        product_wg = int(product_wg)
+    except ValueError:
         continue
 
-    print('%s %s\t%s' % (zone, WH_regional_zone, product_wg_ton))
+    if current_zone == zone:
+        current_wg += product_wg
+    else:
+        if current_zone:
+            print ('%s\t%s' % (current_zone, current_wg))
+        current_zone = zone
+        current_wg = 0
+
+if current_zone == zone:
+    print ('%s\t%s' % (current_zone, current_wg))
 ```
 output
-![]()
+![alt](images2/q12.PNG)
 
 ### Task 2: Warehouse Refill Frequency Correlation
 - Objective: Determine the correlation between warehouse capacity and refill frequency.
@@ -184,7 +196,9 @@ if curr_transport is not None:
 ```
 output
 ![alt](images2/q31.PNG)
-![alt](images2/q32.PNG)
+
+#### method 2
+![alt](images2/q3_final.PNG)
 
 
 ### Task 4. Storage Issue Analysis
@@ -254,4 +268,7 @@ if curr_storage is not None:
 ```
 output
 ![alt](images2/q41.PNG)
-![alt](images2/q42.PNG)
+![alt](images/q4output.PNG)
+
+
+

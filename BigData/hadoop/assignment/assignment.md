@@ -27,7 +27,7 @@ hdfs dfs -ls /
 
 #### d) Command that will list the directories in /hadoop folder.
 ```bash
-hdfs dfs -ls /hadoop
+hdfs dfs -ls /hadoop | grep '^d'
 ```
 ![alt text](images/q4.PNG)
 
@@ -115,9 +115,10 @@ hdfs dfs -appendToFile ./to_append.txt /assignment/file.txt
 
 #### q) Show the capacity, free and used space of the filesystem
 ```bash
-hdfs dfs -df -h
+hdfs dfs -report
 ```
 ![alt](images/qq.PNG)
+![alt](images/qq1.PNG)
 
 #### r) Shows the capacity, free and used space of the filesystem. Add parameter Formats the sizes of files in a human-readable fashion.
 ```bash
@@ -169,7 +170,7 @@ hdfs dfs -stat %r /hadoop/hdfstest.txt
 
 #### z) Write command to Display the status of file “hdfstest.txt” like block size, filesize in bytes.
 ```bash
-hdfs dfs -stat /hadoop/hdfstest.txt
+hdfs dfs -stat "%b %o" /hadoop/hdfstest.txt
 ```
 ![alt](images/qz.PNG)
 
